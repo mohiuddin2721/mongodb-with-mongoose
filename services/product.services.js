@@ -27,14 +27,19 @@ exports.updateProductService = async (productId, body) => {
 }
 
 exports.bulkUpdateProductService = async (data) => {
-    // const result = await Product.updateMany({ _id: data.ids }, data.data, { runValidators: true })
+    const result = await Product.updateMany({ _id: data.ids }, data.data, { runValidators: true })
+    return result;
+
+
+    // const products = [];
+    // data.ids.forEach(product => {
+    //     products.push(Product.updateOne({ _id: product.id }, product.data))
+    // })
+    // const result = await Promise.all(products);
     // return result;
+}
 
-
-    const products = [];
-    data.ids.forEach(product => {
-        products.push(Product.updateOne({ _id: product.id }, product.data))
-    })
-    const result = await Promise.all(products);
+exports.deleteProductByIdService = async (id) => {
+    const result = Product.deleteOne({ _id: id })
     return result;
 }
