@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 });
 
 
-// post data to database
+// get/post/update/delete data to database
 app.use('/api/v1/product', productRoute )
 
 
