@@ -9,8 +9,30 @@ const { getProductService,
 
 
 exports.getProduct = async (req, res) => {
+
     try {
-        const products = await getProductService()
+        let objectQuery = { ...req.query };
+
+        const excludeQuery = ['page', 'limit', 'sort']
+        excludeQuery.forEach(field => delete objectQuery[field])
+        // console.log('original query:', req.query);
+        // console.log('query object:', objectQuery);
+
+        // console.log(req.query.sort);
+
+        // gt, gte, lt, lte
+        let filterString = JSON.stringify(objectQuery)
+        filterString = filterString.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
+        objectQuery = JSON.parse(filterString)
+
+        const quires = {}
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(',').join(' ')
+            quires.sortBy = sortBy;
+            // console.log(sortBy);
+        }
+        const products = await getProductService(objectQuery, quires)
+
         res.status(200).json({
             status: "success",
             data: products
@@ -91,7 +113,7 @@ exports.deleteProductById = async (req, res, next) => {
     try {
         const { id } = req.params;
         const result = await deleteProductByIdService(id)
-        if(!result.deletedCount){
+        if (!result.deletedCount) {
             return res.status(400).json({
                 status: "Fail",
                 error: "Couldn't delete the product"
@@ -127,4 +149,3 @@ exports.bulkDeleteProduct = async (req, res, next) => {
         })
     }
 }
-
