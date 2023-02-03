@@ -31,6 +31,14 @@ exports.getProduct = async (req, res) => {
             quires.sortBy = sortBy;
             // console.log(sortBy);
         }
+
+        // pagination
+        if (req.query.page) {
+            const { page = 1, limit = 10 } = req.query;
+            const skip = (page - 1) * parseInt(limit);
+            quires.skip = skip;
+            quires.limit = parseInt(limit);
+        }
         const products = await getProductService(objectQuery, quires)
 
         res.status(200).json({
